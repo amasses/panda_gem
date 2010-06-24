@@ -4,6 +4,7 @@ describe PandaStream::Video do
   before(:each) do
     Time.stub!(:now).and_return(mock("time", :iso8601 => "2009-11-04T17:54:11+00:00"))
     @hash_data = hash_data = {"duration"=>14010, "created_at"=>"2010/06/24 05:46:11 +0000", "original_filename"=>"panda.mp4", "updated_at"=>"2010/06/24 05:46:14 +0000", "source_url"=>nil, "extname"=>".mp4", "id"=>"12345", "audio_codec"=>"aac", "file_size"=>805301, "height"=>240, "fps"=>29, "status"=>"success", "video_codec"=>"h264", "width"=>300} 
+    @encoding_hash = {"created_at"=>"2010/06/24 08:42:00 +0000", "video_id"=>"f9872e20001830df4777994905a3dc54", "started_encoding_at"=>"2010/06/24 08:42:06 +0000", "updated_at"=>"2010/06/24 08:42:13 +0000", "encoding_progress"=>100, "encoding_time"=>6, "extname"=>".mp4", "id"=>"873f2491a5969d05eb42325d5a4256b9", "file_size"=>1050681, "height"=>320, "status"=>"processing", "profile_id"=>"6acf6510be8b90025467f587488e3b50", "width"=>400} 
   end
   
   it "should return an object when passed a hash" do
@@ -61,5 +62,20 @@ describe PandaStream::Video do
 
     stub = PandaStream::Video.from_hash(@hash_data)
     lambda {stub.destroy }.should raise_error()
+  end
+  
+  it "should attempt to request the encodings" do
+    Panda.should_receive(:get).and_return [@encoding_hash]
+    stub_video = PandaStream::Video.from_hash(@hash_data)
+    
+    encodings = stub_video.encodings
+    encodings.should_not be_nil
+    
+    encoding = encodings.first
+    encoding.should be_instance_of(PandaStream::Encoding)
+    
+    @encoding_hash.keys.each do |key|
+      encoding.send(key.to_sym).should == @encoding_hash[key]
+    end
   end
 end

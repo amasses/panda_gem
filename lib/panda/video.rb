@@ -24,11 +24,8 @@ module PandaStream
       raise "#{response["error"]}: #{response["message"]}" if response.keys.include? "error"
     end
     
-    def encoding_profiles(options = {})
-      data = Panda.get("/videos/#{self.id}/encoding_profiles.json")
-      return [] if data.nil?
-      
-      data.map{|x| EncodingProfile.from_hash(x)}
+    def encodings(options = {})
+      Encoding.for_video(self.id)
     end
     
     def self.from_hash(data)
