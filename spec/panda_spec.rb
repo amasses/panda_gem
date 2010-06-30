@@ -131,6 +131,16 @@ describe Panda do
     it_should_behave_like "Connected"
   end
   
+  describe "Panda::Connection.new with url_path" do
+    before(:each) do
+       @panda = Panda.connect!({"access_key" => "my_access_key", "secret_key" => "my_secret_key", "api_host" => "myapihost", "api_port" => 85, "cloud_id" => 'my_cloud_id', "format" => "json", "url_prefix" => "http://some_s3_prefix/whatever/" })
+     end
+     
+     it "should build a URL with the URL prefix" do
+       Panda.build_url("whatever").should == "http://some_s3_prefix/whatever/whatever"
+     end
+  end
+  
   describe "Using hash as a return format" do
     
     before(:each) do

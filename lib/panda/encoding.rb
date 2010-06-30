@@ -17,6 +17,10 @@ module PandaStream
       data.map{|x| self.from_hash(x) }
     end
     
+    def url
+      Panda.build_url("#{self.id}#{self.extname}")
+    end
+    
     def self.from_hash(data)
       profile = self.new
       

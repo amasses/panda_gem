@@ -28,6 +28,10 @@ module PandaStream
       Encoding.for_video(self.id)
     end
     
+    def url
+      Panda.build_url("#{self.id}#{self.extname}")
+    end
+    
     def self.from_hash(data)
       video = Video.new
       data.keys.each do |key|
