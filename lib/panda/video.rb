@@ -32,6 +32,16 @@ module PandaStream
       Panda.build_url("#{self.id}#{self.extname}")
     end
     
+    def thumbs
+      return [] unless self.status == "success"
+      images = []
+      7.times do |i|
+        images << Panda.build_url("#{self.id}_#{i + 1}.jpg")
+      end
+      
+      images
+    end
+    
     def self.from_hash(data)
       video = Video.new
       data.keys.each do |key|

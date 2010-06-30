@@ -78,4 +78,19 @@ describe PandaStream::Video do
       encoding.send(key.to_sym).should == @encoding_hash[key]
     end
   end
+  
+  it "should return an empty array of thumbs if the video is not transcoded" do
+    Panda.should_receive(:get).and_return @hash_data.merge(:id => "12345", :status => "processing")
+    
+    video = PandaStream::Video.find("12345")
+    video.thumbs.should == []
+  end
+  
+  it "should return an array of image filenames if the video is transcoded" do
+    Panda.should_receive(:get).and_return @hash_data.merge(:id => "12345", :status => "success")
+    
+    video = PandaStream::Video.find("12345")
+    video.thumbs.size.should == 7
+    video.thumbs.first.should match(/12345_1.jpg/)
+  end
 end
