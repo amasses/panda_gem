@@ -3,7 +3,7 @@ module PandaStream
     attr_accessor :created_at, :updated_at, :video_id, :width, :height, :file_size, :id, :profile_id,
                   :extname, :status, :encoding_time, :encoding_progress, :started_encoding_at
     
-    def find(id, options = {})
+    def self.find(id, options = {})
       data = Panda.get("/encodings/#{id}.json", options)
       return nil if data.keys.include? "error"
       
@@ -19,6 +19,16 @@ module PandaStream
     
     def url
       Panda.build_url("#{self.id}#{self.extname}")
+    end
+    
+    def thumbs
+      return [] if self.status != "success"
+      images = []
+      7.times do |i|
+        images << Panda.build_url("#{self.id}_#{i + 1}.jpg")
+      end
+      
+      images
     end
     
     def self.from_hash(data)

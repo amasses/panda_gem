@@ -33,13 +33,8 @@ module PandaStream
     end
     
     def thumbs
-      return [] unless self.status == "success"
-      images = []
-      7.times do |i|
-        images << Panda.build_url("#{self.id}_#{i + 1}.jpg")
-      end
-      
-      images
+      return [] unless self.status == "success" or self.encodings.empty?
+      self.encodings.first.thumbs
     end
     
     def self.from_hash(data)
