@@ -11,6 +11,10 @@ class Panda
     "#{self.connection.url_prefix}#{append}"
   end
   
+  def self.build_video_url(append)
+    "#{self.connection.video_url_prefix || self.connection.url_prefix}#{append}" #fall back to url prefix
+  end
+  
   def self.get(request_uri, params={})    
     connection.get(request_uri, params)
   end
@@ -50,7 +54,7 @@ class Panda
   end
   
   class Connection
-    attr_reader :api_host, :api_port, :access_key, :secret_key, :api_version, :format, :url_prefix
+    attr_reader :api_host, :api_port, :access_key, :secret_key, :api_version, :format, :url_prefix, :video_url_prefix
   
     DEFAULT_API_PORT=80
     DEFAULT_API_HOST="api.pandastream.com"
@@ -62,11 +66,13 @@ class Panda
       if auth_params.class == String
         self.format = options["format"]
         self.url_prefix = options["url_prefix"]
+        self.video_url_prefix = options["video_url_prefix"]
         
         init_from_url(auth_params)
       else
         self.format = auth_params["format"]
         self.url_prefix = auth_params["url_prefix"]
+        self.video_url_prefix = auth_params["video_url_prefix"]
         
         init_from_hash(auth_params)
       end
@@ -83,6 +89,10 @@ class Panda
     
     def url_prefix=(prefix)
       @url_prefix = prefix
+    end
+    
+    def video_url_prefix=(prefix)
+      @video_url_prefix = prefix
     end
     
     def get(request_uri, params={})

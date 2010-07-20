@@ -29,7 +29,7 @@ module PandaStream
     end
     
     def url
-      Panda.build_url("#{self.id}#{self.extname}")
+      Panda.build_video_url("#{self.id}#{self.extname}")
     end
     
     def thumbs
